@@ -6,6 +6,8 @@ import {createStackNavigator} from '@react-navigation/stack'
 import Home from './pages/Home'
 import Eventos from './pages/Eventos'
 import Inscricoes from './pages/Inscricoes'
+import DetailEvent from './pages/DetailEvent'
+
 
 const AppStack = createStackNavigator();
 
@@ -15,7 +17,6 @@ const Routes = ()=>{
       <AppStack.Navigator headerMode='none'
       screenOptions={{
         cardStyle:{
-         
           backgroundColor: '#360568'
         }
       }}
@@ -23,6 +24,8 @@ const Routes = ()=>{
         <AppStack.Screen name = 'Home' component={Home}/>
         <AppStack.Screen name = 'Eventos' component={Eventos}/>
         <AppStack.Screen name = 'Inscricoes' component={Inscricoes}/>
+        <AppStack.Screen name = 'DetailEvent' component ={DetailEvent}/>
+
       </AppStack.Navigator>
     </NavigationContainer>
   )

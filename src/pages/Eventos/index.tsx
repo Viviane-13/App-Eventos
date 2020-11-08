@@ -1,14 +1,37 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import Constants from 'expo-constants'
 import {Feather as Icon} from '@expo/vector-icons'
 import {useNavigation} from '@react-navigation/native'
 import {View, StyleSheet, TouchableOpacity, Text, ScrollView} from 'react-native'
+import api from '../../services/api'
+
+interface Event{
+  id: number,
+  name: string,
+  description: string,
+  dt_init: Date,
+  dt_fin: Date,
+  qtd_vgs: number,
+}
 
 const Eventos = () =>{
+  const [events, setEvents] =  useState<Event[]>([]);
   const navigation = useNavigation();
+
+  useEffect(() =>{
+    api.get('/events').then(response=>{
+    setEvents(response.data)
+    })
+  },[])
+
   function handleNavigateBack(){
     navigation.goBack();
   }
+
+  function handleNavigateToDetailEvent(id: number){
+   navigation.navigate('DetailEvent', {event_id: id})
+  }
+
   return (
     <View style={styles.container}>
       
@@ -20,31 +43,15 @@ const Eventos = () =>{
       <ScrollView showsVerticalScrollIndicator={false}>
       <View style = {styles.itemsContainer}>
         
-          <TouchableOpacity style={styles.item} onPress={()=>{}}>
-            <Text style = {styles.itemTitle}>OSI</Text>
+          {events.map(events =>(
+            <TouchableOpacity key={String(events.id)} style={styles.item} onPress = {() => handleNavigateToDetailEvent(events.id)}
+            activeOpacity = {0.6}
+            >
+            <Text style = {styles.itemTitle}>{events.name}</Text>
+            
           </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={()=>{}}>
-            <Text>OSI</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={()=>{}}>
-            <Text>OSI</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={()=>{}}>
-            <Text>OSI</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={()=>{}}>
-            <Text>OSI</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={()=>{}}>
-            <Text>OSI</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={()=>{}}>
-            <Text>OSI</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={()=>{}}>
-            <Text>OSI</Text>
-          </TouchableOpacity>
-      
+          ))}
+         
       </View>
       </ScrollView>
     </View>
@@ -56,6 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 32,
     paddingTop: 20 + Constants.statusBarHeight,
+    
   },
 
   title: {
@@ -80,7 +88,8 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 32,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    
   },
 
   item: {
@@ -101,10 +110,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  selectedItem: {
-    borderColor: "#34CB79",
-    borderWidth: 2,
-  },
 
   itemTitle: {
     fontFamily: "Roboto_400Regular",
