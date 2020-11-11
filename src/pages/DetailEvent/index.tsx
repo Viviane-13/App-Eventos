@@ -17,50 +17,42 @@ interface Data{
     dt_init: Date,
     dt_fin: Date,
     qtd_vgs: number
-  }
-}
-interface Event{
-  id: number,
-  name: string,
-  description: string,
-  dt_init: Date,
-  dt_fin: Date,
-  qtd_vgs: number,
+  };
+  insc_event:{
+    name: string
+  }[];
 }
 
 const DetailEvent = () =>{
   const [data, setData] = useState<Data>({} as Data)
-
-  const [events, setEvents] =  useState<Event[]>([]);
- 
-
-  useEffect(() =>{
-    api.get('/events').then(response=>{
-    setEvents(response.data)
-    })
-  },[])
+  
 
   const navigation = useNavigation();
   const route = useRoute();
 
-  const routeParams = route.params as Params;
+  
 
-  useEffect(()=>{
-    api.get(`events/${routeParams.event_id}`).then(response =>{
-      setData(response.data)
+  const routeParams = route.params as Params;
+  const eventoId = routeParams.event_id; 
+ 
+  useEffect(() =>{
+    api.get(`events/${routeParams.event_id}`).then(response=>{
+    setData(response.data)
     })
   },[])
+
 
   function handleNavigateBack(){
     navigation.goBack();
   }
-  function handleNavigateToDetailEvent(id: number){
-    navigation.navigate('Inscricoes', {event_id: id})
+  function handleNavigateToInsc(id: number){
+    navigation.navigate('Inscricoes', {evento_id:id})
    }
 
   if(!data.event){
     return null
   }
+
   return(
     <SafeAreaView style = {{flex: 1}}>
     <View style = {styles.container}>
@@ -73,15 +65,21 @@ const DetailEvent = () =>{
   <Text style = {styles.info}>Data: {data.event.dt_init}</Text>
   <Text style = {styles.info}>Data: {data.event.dt_fin}</Text>
   <Text style = {styles.infoTitle}>Quantidades de vagas: </Text>
+  
   <Text style = {styles.info}>Data: {data.event.qtd_vgs}</Text>
+  
     </View>
     <View style = {styles.footer}>
-      <RectButton style = {styles.button} onPress = {()=>{}}>
+    <RectButton style = {styles.button} onPress = {()=>{}}>
         <Text style = {styles.buttonText}>Inscreva-se</Text>
       </RectButton>
-      <RectButton style = {styles.button} onPress = {() => handleNavigateToDetailEvent(events.id)}>
-        <Text style = {styles.buttonText}>Lista de Participantes</Text>
-      </RectButton>
+
+
+
+     <RectButton  style = {styles.button} onPress = {() => handleNavigateToInsc(eventoId)}>
+      <Text style = {styles.buttonText}>Lista de Participantes</Text>
+    </RectButton>
+     
     </View>
     </SafeAreaView>
     
@@ -95,15 +93,12 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
 
-  
-
   eventName: {
     color: "#fff",
     fontSize: 28,
     fontFamily: "Ubuntu_700Bold",
     marginTop: 24,
   },
-
   info: {
     fontFamily: "Roboto_400Regular",
     fontSize: 16,
